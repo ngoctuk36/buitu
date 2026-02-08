@@ -25,6 +25,20 @@ import pool from './db.js';
 # File .env 
 Chứa DB_URL 
 
+# Đăng lên github
+## Tạo file gitignore trong đó ghi:
+node_modules
+.env
+.next
+dist
+build
 
+git add .
+git commit -m "Nội dung bất kì"
+## Nếu muốn đổi branch
+git branch -M + tên muốn đổi
 
+## Tạo repo trên github
+git remote add origin + link repo 
+git push -u origin main (hoặc khác main nếu đưa vô tên khác)
 
