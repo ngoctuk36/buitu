@@ -53,7 +53,7 @@ export default function HomePage() {
         <button
           onClick={createPage}
           disabled={loading}
-          className="bg-black text-white px-6 py-2 rounded disabled:opacity-50"
+          className="bg-black text-white px-6 py-2 rounded disabled:opacity-50 transition hover:bg-blue-600 active:bg-blue-700"
         >
           {loading ? "Đang tạo..." : "Tạo link"}
         </button>
@@ -69,7 +69,7 @@ export default function HomePage() {
               />
               <button
                 onClick={() => navigator.clipboard.writeText(link)}
-                className="bg-gray-800 text-white px-3 rounded"
+                className="bg-gray-800 text-white px-3 rounded transition hover:bg-blue-600 active:bg-blue-700"
               >
                 Copy
               </button>
