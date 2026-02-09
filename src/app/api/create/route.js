@@ -7,9 +7,9 @@ function generateId() {
 
 export async function POST(req) {
   try {
-    const { content } = await req.json();
+    const { content = "", files = [] } = await req.json();
 
-    if (!content) {
+    if (!content && files.length === 0) {
       return NextResponse.json(
         { error: "No content" },
         { status: 400 }
@@ -20,20 +20,17 @@ export async function POST(req) {
 
     await pool.query(
       `
-      INSERT INTO pages (id, content, expires_at)
-      VALUES ($1, $2, NOW() + INTERVAL '31 days')
+      INSERT INTO pages (id, content, files, expires_at)
+      VALUES ($1, $2, $3, NOW() + INTERVAL '365 days')
       `,
-      [id, content]
+      [id, content, JSON.stringify(files)]
     );
 
-    return NextResponse.json({
-      url: `/${id}`,
-    });
+    return NextResponse.json({ url: `/${id}` });
   } catch (err) {
-    console.error("API /create error:", err);
-
+    console.error("Create error:", err);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Internal error" },
       { status: 500 }
     );
   }

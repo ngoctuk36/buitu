@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
 
-// GET /api/page/[id]
 export async function GET(req, context) {
-  const { id } = await context.params; // 👈 BẮT BUỘC await
+  const { id } = await context.params;
 
   const result = await pool.query(
     `
-    SELECT content
+    SELECT content, files
     FROM pages
     WHERE id = $1 AND expires_at > NOW()
     `,
@@ -16,36 +15,29 @@ export async function GET(req, context) {
 
   if (result.rowCount === 0) {
     return NextResponse.json(
-      { error: "Not found or expired" },
+      { error: "Not found" },
       { status: 404 }
     );
   }
 
   return NextResponse.json({
     content: result.rows[0].content,
+    files: result.rows[0].files || [],
   });
 }
 
-// PUT /api/page/[id]
 export async function PUT(req, context) {
-  const { id } = await context.params; // 👈 BẮT BUỘC await
-  const { content } = await req.json();
+  const { id } = await context.params;
+  const { content, files } = await req.json();
 
-  const result = await pool.query(
+  await pool.query(
     `
     UPDATE pages
-    SET content = $1
-    WHERE id = $2 AND expires_at > NOW()
+    SET content = $1, files = $2
+    WHERE id = $3
     `,
-    [content, id]
+    [content, JSON.stringify(files || []), id]
   );
-
-  if (result.rowCount === 0) {
-    return NextResponse.json(
-      { error: "Not found or expired" },
-      { status: 404 }
-    );
-  }
 
   return NextResponse.json({ success: true });
 }
